@@ -1,0 +1,13 @@
+# Editor directories and files
+.idea
+.env
+.vscode
+.docker_build
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+vendor/*/
+
