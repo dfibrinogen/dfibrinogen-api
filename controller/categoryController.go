@@ -21,11 +21,7 @@ func (c *BaseController) GetCategoryAll(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success get category all",
-		"data":    categoryList,
-	})
+	context.JSON(http.StatusOK, categoryList)
 }
 
 func (c *BaseController) GetCategoryByID(context *gin.Context) {
@@ -46,11 +42,7 @@ func (c *BaseController) GetCategoryByID(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success get category",
-		"data":    category,
-	})
+	context.JSON(http.StatusOK, category)
 }
 
 func (c *BaseController) AddCategory(context *gin.Context) {
@@ -76,11 +68,7 @@ func (c *BaseController) AddCategory(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{
-		"status":  http.StatusCreated,
-		"message": "Success save category",
-		"data":    category,
-	})
+	context.JSON(http.StatusCreated, category)
 }
 
 func (c *BaseController) UpdateCategory(context *gin.Context) {
@@ -121,11 +109,7 @@ func (c *BaseController) UpdateCategory(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success update data category",
-		"data":    category,
-	})
+	context.JSON(http.StatusOK, category)
 }
 
 func (c *BaseController) DeleteCategory(context *gin.Context) {

@@ -21,11 +21,7 @@ func (c *BaseController) GetPostAll(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success get post",
-		"data":    postList,
-	})
+	context.JSON(http.StatusOK, postList)
 }
 
 func (c *BaseController) GetPostByID(context *gin.Context) {
@@ -46,11 +42,7 @@ func (c *BaseController) GetPostByID(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success get post",
-		"data":    post,
-	})
+	context.JSON(http.StatusOK, post)
 }
 
 func (c *BaseController) AddPost(context *gin.Context) {
@@ -76,11 +68,7 @@ func (c *BaseController) AddPost(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{
-		"status":  http.StatusCreated,
-		"message": "Success save post",
-		"data": post,
-	})
+	context.JSON(http.StatusCreated, post)
 }
 
 func (c *BaseController) UpdatePost(context *gin.Context) {
@@ -122,11 +110,7 @@ func (c *BaseController) UpdatePost(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success update post",
-		"data":    post,
-	})
+	context.JSON(http.StatusOK, post)
 }
 
 func (c *BaseController) DeletePost(context *gin.Context) {

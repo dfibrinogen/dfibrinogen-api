@@ -21,11 +21,7 @@ func (c *BaseController) GetUserAll(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success get user all",
-		"data":    profileList,
-	})
+	context.JSON(http.StatusOK, profileList)
 }
 
 func (c *BaseController) GetProfileByID(context *gin.Context) {
@@ -46,11 +42,7 @@ func (c *BaseController) GetProfileByID(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success get profile",
-		"data":    profile,
-	})
+	context.JSON(http.StatusOK, profile)
 }
 
 func (c *BaseController) UpdateProfile(context *gin.Context) {
@@ -92,11 +84,7 @@ func (c *BaseController) UpdateProfile(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success update profile",
-		"data":    profile,
-	})
+	context.JSON(http.StatusOK, profile)
 }
 
 func (c *BaseController) DeleteUser(context *gin.Context) {

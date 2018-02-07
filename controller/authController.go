@@ -53,11 +53,7 @@ func (c *BaseController) UserLogin(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Login Success",
-		"data":    profile,
-	})
+	context.JSON(http.StatusOK, profile)
 }
 
 func (c *BaseController) UserRegister(context *gin.Context) {
@@ -110,9 +106,5 @@ func (c *BaseController) UserRegister(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{
-		"status":  http.StatusCreated,
-		"message": "Register Success",
-		"data":    profile,
-	})
+	context.JSON(http.StatusCreated, profile)
 }
