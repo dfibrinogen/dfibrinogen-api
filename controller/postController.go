@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"unicode"
 )
 
 func (c *BaseController) GetPostAll(context *gin.Context) {
@@ -14,14 +15,11 @@ func (c *BaseController) GetPostAll(context *gin.Context) {
 	c.DB.Find(&postList)
 
 	if len(postList) == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "Not post at all",
-		})
+		responseJSON(context, http.StatusNotFound, "Not post at all", nil)
 		return
 	}
 
-	context.JSON(http.StatusOK, postList)
+	responseJSON(context, http.StatusOK, "Success get data forum post", postList)
 }
 
 func (c *BaseController) GetPostByID(context *gin.Context) {
@@ -35,14 +33,11 @@ func (c *BaseController) GetPostByID(context *gin.Context) {
 	c.DB.Where(&model.DPost{ID: postId}).First(&post)
 
 	if post.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "No found post",
-		})
+		responseJSON(context, http.StatusNotFound, "Not found data forum post", nil)
 		return
 	}
 
-	context.JSON(http.StatusOK, post)
+	responseJSON(context, http.StatusOK, "Success get data forum post", post)
 }
 
 func (c *BaseController) AddPost(context *gin.Context) {
@@ -51,24 +46,18 @@ func (c *BaseController) AddPost(context *gin.Context) {
 
 	err := context.BindJSON(&post)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed bind data post",
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed bind data forum post", nil)
 		return
 	}
 
 	c.DB.Save(&post)
 
 	if post.ID == 0 {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed save post",
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed save data forum post", post)
 		return
 	}
 
-	context.JSON(http.StatusCreated, post)
+	responseJSON(context, http.StatusCreated, "Success save data forum post", unicode.Po)
 }
 
 func (c *BaseController) UpdatePost(context *gin.Context) {
@@ -83,34 +72,24 @@ func (c *BaseController) UpdatePost(context *gin.Context) {
 	c.DB.Where(&model.DPost{ID: postId}).First(&postTemp)
 
 	if postTemp.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "No found post",
-		})
+		responseJSON(context, http.StatusNotFound, "Not found data forum post", nil)
 		return
 	}
 
 	err := context.BindJSON(&post)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed bind data post",
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed bind data forum post", nil)
 		return
 	}
 
 	c.DB.Where(&model.DPost{ID: postId}).Save(&post)
 
 	if post.ID == 0 {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed update post",
-			"data":    post,
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed update data forum post", post)
 		return
 	}
 
-	context.JSON(http.StatusOK, post)
+	responseJSON(context, http.StatusOK, "Success update data forum post", post)
 }
 
 func (c *BaseController) DeletePost(context *gin.Context) {
@@ -124,17 +103,11 @@ func (c *BaseController) DeletePost(context *gin.Context) {
 	c.DB.Where(&model.DPost{ID: postId}).First(&post)
 
 	if post.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "No found post",
-		})
+		responseJSON(context, http.StatusNotFound, "Not found data forum post", post)
 		return
 	}
 
 	c.DB.Delete(&post)
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success delete post",
-	})
+	responseJSON(context, http.StatusOK, "Success delete data forum post", nil)
 }

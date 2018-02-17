@@ -14,10 +14,7 @@ func (c *BaseController) UserLogin(context *gin.Context) {
 
 	err := context.BindJSON(&user)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed bind data login",
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed bind data user", nil)
 		return
 	}
 
@@ -27,33 +24,24 @@ func (c *BaseController) UserLogin(context *gin.Context) {
 	c.DB.Where(&model.DUser{Username: username}).First(&user)
 
 	if user.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "Not user found",
-		})
+		responseJSON(context, http.StatusNotFound, "Not found data user", nil)
 		return
 	}
 
 	isMatched := util.MatchString(user.Password, password)
 	if !isMatched {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Wrong Password",
-		})
+		responseJSON(context, http.StatusBadRequest, "Wrong password", nil)
 		return
 	}
 
 	c.DB.Where(&model.DProfile{UserID: user.ID}).First(&profile)
 
 	if profile.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "Not profile found",
-		})
+		responseJSON(context, http.StatusNotFound, "Not found data profile", nil)
 		return
 	}
 
-	context.JSON(http.StatusOK, profile)
+	responseJSON(context, http.StatusOK, "Success get data user", profile)
 }
 
 func (c *BaseController) UserRegister(context *gin.Context) {
@@ -63,20 +51,14 @@ func (c *BaseController) UserRegister(context *gin.Context) {
 
 	err := context.BindJSON(&user)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed bind data user",
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed bind data user", nil)
 		return
 	}
 
 	c.DB.Where(&model.DUser{Username: user.Username}).First(&profile)
 
 	if user.ID != 0 {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Username already exists",
-		})
+		responseJSON(context, http.StatusBadRequest, "Username already exists", nil)
 		return
 	}
 
@@ -86,10 +68,7 @@ func (c *BaseController) UserRegister(context *gin.Context) {
 	c.DB.Save(&user)
 
 	if user.ID == 0 {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed save data user",
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed save data user", nil)
 		return
 	}
 
@@ -99,12 +78,9 @@ func (c *BaseController) UserRegister(context *gin.Context) {
 	c.DB.Save(&profile)
 
 	if profile.ID == 0 {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed save data profile",
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed save data profile", nil)
 		return
 	}
 
-	context.JSON(http.StatusCreated, profile)
+	responseJSON(context, http.StatusCreated, "Success save data user", profile)
 }

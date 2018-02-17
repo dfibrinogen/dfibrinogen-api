@@ -14,14 +14,11 @@ func (c *BaseController) GetUserAll(context *gin.Context) {
 	c.DB.Find(&profileList)
 
 	if len(profileList) == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "Not user at all",
-		})
+		responseJSON(context, http.StatusNotFound, "Not user at all", nil)
 		return
 	}
 
-	context.JSON(http.StatusOK, profileList)
+	responseJSON(context, http.StatusOK, "Success get data user", profileList)
 }
 
 func (c *BaseController) GetProfileByID(context *gin.Context) {
@@ -35,14 +32,11 @@ func (c *BaseController) GetProfileByID(context *gin.Context) {
 	c.DB.Where(&model.DProfile{UserID: userId}).First(&profile)
 
 	if profile.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "Not found user",
-		})
+		responseJSON(context, http.StatusNotFound, "Not found data user", nil)
 		return
 	}
 
-	context.JSON(http.StatusOK, profile)
+	responseJSON(context, http.StatusOK, "Success get data user", profile)
 }
 
 func (c *BaseController) UpdateProfile(context *gin.Context) {
@@ -57,34 +51,24 @@ func (c *BaseController) UpdateProfile(context *gin.Context) {
 	c.DB.Where(&model.DProfile{UserID: userId}).First(&profileTemp)
 
 	if profileTemp.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "Not found user",
-		})
+		responseJSON(context, http.StatusNotFound, "Not found data user", nil)
 		return
 	}
 
 	err := context.BindJSON(&profile)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed bind data profile",
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed bind data user", nil)
 		return
 	}
 
 	c.DB.Where(&model.DProfile{UserID: userId}).Save(&profile)
 
 	if profile.ID == 0 {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "Failed update profile",
-			"data":    profile,
-		})
+		responseJSON(context, http.StatusBadRequest, "Failed update data user", profile)
 		return
 	}
 
-	context.JSON(http.StatusOK, profile)
+	responseJSON(context, http.StatusOK, "Success update data user", profile)
 }
 
 func (c *BaseController) DeleteUser(context *gin.Context) {
@@ -102,18 +86,12 @@ func (c *BaseController) DeleteUser(context *gin.Context) {
 	c.DB.Where(&model.DProfile{UserID: userId}).First(&profile)
 
 	if user.ID == 0 || profile.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{
-			"status":  http.StatusNotFound,
-			"message": "Not found data",
-		})
+		responseJSON(context, http.StatusNotFound, "Not found data user", nil)
 		return
 	}
 
 	c.DB.Delete(&user)
 	c.DB.Delete(&profile)
 
-	context.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "Success delete user profile",
-	})
+	responseJSON(context, http.StatusOK, "Success delete data user", nil)
 }

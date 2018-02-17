@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/unrolled/secure"
+	"github.com/dafian47/dfibrinogen-api/util"
 )
 
 func InitRouter(db *gorm.DB) *gin.Engine {
@@ -47,6 +48,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	router.Use(secureFunc)
+	router.Use(util.Limit(1000))
 	router.MaxMultipartMemory = 8 << 20
 	router.Static("/image", "./resource/images")
 
