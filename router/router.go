@@ -3,10 +3,10 @@ package router
 import (
 	"github.com/dafian47/dfibrinogen-api/config"
 	"github.com/dafian47/dfibrinogen-api/controller"
+	"github.com/dafian47/dfibrinogen-api/util"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/unrolled/secure"
-	"github.com/dafian47/dfibrinogen-api/util"
 )
 
 func InitRouter(db *gorm.DB) *gin.Engine {
@@ -90,6 +90,16 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			postRoute.POST("/", baseController.AddPost)
 			postRoute.PUT("/:id", baseController.UpdatePost)
 			postRoute.DELETE("/:id", baseController.DeletePost)
+
+			postRoute.GET("/:id/viewers", baseController.AddViewer)
+
+			postRoute.POST("/:id/likes", baseController.AddLike)
+			postRoute.DELETE("/:id/likes", baseController.DeleteLike)
+
+			postRoute.GET("/:id/comments", baseController.GetCommentByPostID)
+			postRoute.POST("/:id/comments", baseController.AddComment)
+			postRoute.PUT("/:id/comments", baseController.UpdateComment)
+			postRoute.DELETE("/:id/comments", baseController.DeleteComment)
 		}
 	}
 

@@ -4,7 +4,7 @@ import (
 	"github.com/dafian47/dfibrinogen-api/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
+	"github.com/dafian47/dfibrinogen-api/util"
 )
 
 func (c *BaseController) GetUserAll(context *gin.Context) {
@@ -25,9 +25,7 @@ func (c *BaseController) GetProfileByID(context *gin.Context) {
 
 	var profile model.DProfile
 
-	id := context.Param("id")
-	uid64, _ := strconv.ParseUint(id, 10, 32)
-	userId := uint(uid64)
+	userId := util.ConvertStringToUint(context.Param("id"))
 
 	c.DB.Where(&model.DProfile{UserID: userId}).First(&profile)
 
@@ -44,9 +42,7 @@ func (c *BaseController) UpdateProfile(context *gin.Context) {
 	var profile model.DProfile
 	var profileTemp model.DProfile
 
-	id := context.Param("id")
-	uid64, _ := strconv.ParseUint(id, 10, 32)
-	userId := uint(uid64)
+	userId := util.ConvertStringToUint(context.Param("id"))
 
 	c.DB.Where(&model.DProfile{UserID: userId}).First(&profileTemp)
 
@@ -78,9 +74,7 @@ func (c *BaseController) DeleteUser(context *gin.Context) {
 
 	// TODO Delete Data Post with User Id
 
-	id := context.Param("id")
-	uid64, _ := strconv.ParseUint(id, 10, 32)
-	userId := uint(uid64)
+	userId := util.ConvertStringToUint(context.Param("id"))
 
 	c.DB.Where(&model.DUser{ID: userId}).First(&user)
 	c.DB.Where(&model.DProfile{UserID: userId}).First(&profile)

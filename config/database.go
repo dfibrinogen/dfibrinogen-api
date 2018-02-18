@@ -27,6 +27,8 @@ func InitDB(databaseUrl string) *gorm.DB {
 		&model.DProfile{},
 		&model.DCategory{},
 		&model.DPost{},
+		&model.DPostComment{},
+		&model.DPostLike{},
 	)
 
 	return db

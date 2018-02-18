@@ -4,7 +4,7 @@ import (
 	"github.com/dafian47/dfibrinogen-api/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
+	"github.com/dafian47/dfibrinogen-api/util"
 )
 
 func (c *BaseController) GetCategoryAll(context *gin.Context) {
@@ -25,9 +25,7 @@ func (c *BaseController) GetCategoryByID(context *gin.Context) {
 
 	var category model.DCategory
 
-	id := context.Param("id")
-	uid64, _ := strconv.ParseUint(id, 10, 32)
-	categoryId := uint(uid64)
+	categoryId := util.ConvertStringToUint(context.Param("id"))
 
 	c.DB.Where(&model.DCategory{ID: categoryId}).First(&category)
 
@@ -64,9 +62,7 @@ func (c *BaseController) UpdateCategory(context *gin.Context) {
 	var category model.DCategory
 	var categoryTemp model.DCategory
 
-	id := context.Param("id")
-	uid64, _ := strconv.ParseUint(id, 10, 32)
-	categoryId := uint(uid64)
+	categoryId := util.ConvertStringToUint(context.Param("id"))
 
 	c.DB.Where(&model.DCategory{ID: categoryId}).First(&categoryTemp)
 
@@ -97,9 +93,7 @@ func (c *BaseController) DeleteCategory(context *gin.Context) {
 
 	// TODO Delete Data Post with Category Id
 
-	id := context.Param("id")
-	uid64, _ := strconv.ParseUint(id, 10, 32)
-	categoryId := uint(uid64)
+	categoryId := util.ConvertStringToUint(context.Param("id"))
 
 	c.DB.Where(&model.DCategory{ID: categoryId}).First(&category)
 
