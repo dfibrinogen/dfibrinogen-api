@@ -1,37 +1,32 @@
 D'Fibrinogen API
 ================
 
-## Running Locally
+## Getting Start
 
-Make sure you have [Go](http://golang.org/doc/install) installed.
+You can open this project with Sublime Text, Atom or GoLand
+
+## Prerequisites
+
+What things you need to install the software and install them :
+
+* [Go](http://golang.org/doc/install)
+* [PostgreSQL](https://www.postgresql.org/)
+* [Dep](https://github.com/golang/dep)
+
+If you using Mac OS, you could install this with [Homebrew](homebrew.sh)
 
 ```sh
-$ go get -u github.com/dafian47/dfibrinogen-api
-$ cd $GOPATH/src/github.com/dafian47/dfibrinogen-api
-$ govendor sync
-$ go run server.go
+$ brew install go
+$ brew install postgresql
+$ brew install dep
 ```
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
-
-You should also install [GoVendor](https://github.com/kardianos/govendor) if you are going to add any dependencies
 
 ## Built With
 
-* [Gin Gonic](https://github.com/gin-gonic/gin)
+* [Echo](https://github.com/labstack/echo)
 * [Gorm](https://github.com/jinzhu/gorm)
 * [PostgreSQL Driver](https://github.com/lib/pq)
-* [Rest Secure](github.com/unrolled/secure)
 * [Bcrypt](golang.org/x/crypto/bcrypt)
-
-## ToDo
-
-* [X] Rest for Login & Register
-* [X] Rest for User, Category & Posts
-* [ ] Rest for Likes & Comments
-* [ ] Rest for Edit & Delete Posts
-* [ ] Using JWT Token
-* [ ] Documentation
 
 ## License
 
