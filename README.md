@@ -25,7 +25,6 @@ $ brew install dep
 
 * [Echo](https://github.com/labstack/echo)
 * [Gorm](https://github.com/jinzhu/gorm)
-* [PostgreSQL Driver](https://github.com/lib/pq)
 * [Bcrypt](golang.org/x/crypto/bcrypt)
 
 ## License
