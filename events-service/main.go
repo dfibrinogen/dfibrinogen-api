@@ -30,5 +30,5 @@ func main() {
 
 	service.NewEventService(v1, repository.InitEventRepo(database))
 
-	e.Logger.Fatal(e.Start(":5004"))
+	e.Logger.Fatal(e.Start(":5000"))
 }

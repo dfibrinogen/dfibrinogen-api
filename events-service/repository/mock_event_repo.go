@@ -9,20 +9,15 @@ type EventRepo struct {
 	mock.Mock
 }
 
-func InitMockEventRepo() *EventRepo {
-	s := new(EventRepo)
-	return s
-}
-
-func (m *EventRepo) FetchEventAll() ([]*model.Event, error) {
+func (m *EventRepo) FetchEventAll() ([]model.Event, error) {
 	ret := m.Called()
 
-	var r0 []*model.Event
-	if rf, ok := ret.Get(0).(func() []*model.Event); ok {
+	var r0 []model.Event
+	if rf, ok := ret.Get(0).(func() []model.Event); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*model.Event)
+			r0 = ret.Get(0).([]model.Event)
 		}
 	}
 
@@ -36,15 +31,46 @@ func (m *EventRepo) FetchEventAll() ([]*model.Event, error) {
 	return r0, r1
 }
 
-func (m *EventRepo) CreateEvent(event *model.Event) error {
-	ret := m.Called(event)
+func (m *EventRepo) FetchEventByID(id string) (model.Event, error) {
+	ret := m.Called()
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*model.Event) error); ok {
-		r0 = rf(event)
+	var r0 model.Event
+	if rf, ok := ret.Get(0).(func() model.Event); ok {
+		r0 = rf()
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(model.Event)
+		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+func (m *EventRepo) AddEvent(data model.Event) (model.Event, error) {
+	ret := m.Called(data)
+
+	var r0 model.Event
+	if rf, ok := ret.Get(0).(func() model.Event); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(model.Event)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }

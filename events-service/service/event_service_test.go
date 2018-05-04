@@ -13,10 +13,17 @@ import (
 
 func TestEventService_GetDataAll(t *testing.T) {
 
-	mockRepo := repository.InitMockEventRepo()
+	mockRepo := new(repository.EventRepo)
 
 	mockRepo.On("FetchEventAll").
-		Return([]*model.Event{{"EVENT.01", "Test 01", "Location 01", time.Now(), time.Now(), nil}}, nil).
+		Return([]model.Event{{
+			ID:        "EVENT.01",
+			Name:      "Test 01",
+			Location:  "Location 01",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			DeletedAt: nil}},
+			nil).
 		Once()
 
 	e := echo.New()
@@ -31,4 +38,6 @@ func TestEventService_GetDataAll(t *testing.T) {
 	if assert.NoError(t, h.GetDataAll(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 	}
+
+	mockRepo.AssertExpectations(t)
 }

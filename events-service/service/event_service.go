@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/dfibrinogen/dfibrinogen-api/events-service/model"
 	"github.com/dfibrinogen/dfibrinogen-api/events-service/repository"
 	"github.com/dfibrinogen/dfibrinogen-api/events-service/util"
 	"github.com/labstack/echo"
@@ -24,11 +25,13 @@ func NewEventService(e *echo.Group, repo repository.IEventRepository) {
 	handler := &eventService{repo: repo}
 
 	e.GET("/events", handler.GetDataAll)
+	e.GET("/events/:id", handler.GetDataByID)
+	e.POST("/events", handler.CreateData)
 }
 
 func (s *eventService) GetDataAll(c echo.Context) error {
 
-	dataList, err := s.repo.FetchEventAll()
+	dataResults, err := s.repo.FetchEventAll()
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &util.Response{
@@ -41,6 +44,58 @@ func (s *eventService) GetDataAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, &util.Response{
 		Status:  http.StatusOK,
 		Message: util.SUCCESS_GET_DATA_ALL,
-		Data:    dataList,
+		Data:    dataResults,
+	})
+}
+
+func (s *eventService) GetDataByID(c echo.Context) error {
+
+	id := c.Param("id")
+
+	dataResult, err := s.repo.FetchEventByID(id)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &util.Response{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	return c.JSON(http.StatusOK, &util.Response{
+		Status:  http.StatusOK,
+		Message: util.SUCCESS_GET_DATA,
+		Data:    dataResult,
+	})
+}
+
+func (s *eventService) CreateData(c echo.Context) error {
+
+	var data model.Event
+
+	err := c.Bind(&data)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &util.Response{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	dataResult, err := s.repo.AddEvent(data)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, &util.Response{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	return c.JSON(http.StatusOK, &util.Response{
+		Status:  http.StatusOK,
+		Message: util.SUCCESS_GET_DATA,
+		Data:    dataResult,
 	})
 }
