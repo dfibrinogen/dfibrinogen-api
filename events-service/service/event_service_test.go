@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/dfibrinogen/dfibrinogen-api/events-service/model"
 	"github.com/dfibrinogen/dfibrinogen-api/events-service/repository"
 	"github.com/dfibrinogen/dfibrinogen-api/events-service/util"
@@ -35,7 +36,8 @@ func TestEventService_GetDataAll(t *testing.T) {
 	mockResponseString := string(mockResponseJSON)
 
 	mockRepo := new(repository.EventRepo)
-	mockRepo.On("FetchEventAll").Return(mockData, nil).Once()
+	mockRepo.On("FetchEventAll").
+		Return(mockData, nil).Once()
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.GET, "/", nil)
@@ -48,6 +50,40 @@ func TestEventService_GetDataAll(t *testing.T) {
 	// Assertions
 	if assert.NoError(t, h.GetDataAll(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, mockResponseString, rec.Body.String())
+	}
+
+	mockRepo.AssertExpectations(t)
+}
+
+func TestEventService_GetDataAll_Error(t *testing.T) {
+
+	mockError := util.EMPTY_ERROR
+
+	mockResponse := util.Response{
+		Status:  http.StatusNotFound,
+		Message: mockError.Error(),
+		Data:    nil,
+	}
+
+	mockResponseJSON, _ := json.Marshal(mockResponse)
+	mockResponseString := string(mockResponseJSON)
+
+	mockRepo := new(repository.EventRepo)
+	mockRepo.On("FetchEventAll").
+		Return(nil, mockError).Once()
+
+	e := echo.New()
+	req := httptest.NewRequest(echo.GET, "/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/events")
+
+	h := &eventService{repo: mockRepo}
+
+	// Assertions
+	if assert.Error(t, mockError, h.GetDataAll(c)) {
+		assert.Equal(t, http.StatusNotFound, rec.Code)
 		assert.Equal(t, mockResponseString, rec.Body.String())
 	}
 
@@ -74,7 +110,8 @@ func TestEventService_GetDataByID(t *testing.T) {
 	mockResponseString := string(mockResponseJSON)
 
 	mockRepo := new(repository.EventRepo)
-	mockRepo.On("FetchEventByID").Return(mockData, nil).Once()
+	mockRepo.On("FetchEventByID").
+		Return(mockData, nil).Once()
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.GET, "/", nil)
@@ -89,6 +126,42 @@ func TestEventService_GetDataByID(t *testing.T) {
 	// Assertions
 	if assert.NoError(t, h.GetDataByID(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, mockResponseString, rec.Body.String())
+	}
+
+	mockRepo.AssertExpectations(t)
+}
+
+func TestEventService_GetDataByID_Error(t *testing.T) {
+
+	mockError := util.NOT_FOUND_ERROR
+
+	mockResponse := util.Response{
+		Status:  http.StatusNotFound,
+		Message: mockError.Error(),
+		Data:    nil,
+	}
+
+	mockResponseJSON, _ := json.Marshal(mockResponse)
+	mockResponseString := string(mockResponseJSON)
+
+	mockRepo := new(repository.EventRepo)
+	mockRepo.On("FetchEventByID").
+		Return(nil, mockError).Once()
+
+	e := echo.New()
+	req := httptest.NewRequest(echo.GET, "/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/events/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("EVENT.01")
+
+	h := &eventService{repo: mockRepo}
+
+	// Assertions
+	if assert.Error(t, mockError, h.GetDataByID(c)) {
+		assert.Equal(t, http.StatusNotFound, rec.Code)
 		assert.Equal(t, mockResponseString, rec.Body.String())
 	}
 
@@ -117,7 +190,8 @@ func TestEventService_CreateData(t *testing.T) {
 	mockResponseString := string(mockResponseJSON)
 
 	mockRepo := new(repository.EventRepo)
-	mockRepo.On("CreateEvent", mock.AnythingOfType("model.Event")).Return(mockData, nil).Once()
+	mockRepo.On("CreateEvent", mock.AnythingOfType("model.Event")).
+		Return(mockData, nil).Once()
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.POST, "/", strings.NewReader(string(mockJSON)))
@@ -131,6 +205,86 @@ func TestEventService_CreateData(t *testing.T) {
 	// Assertions
 	if assert.NoError(t, h.CreateData(c)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)
+		assert.Equal(t, mockResponseString, rec.Body.String())
+	}
+
+	mockRepo.AssertExpectations(t)
+}
+
+func TestEventService_CreateData_Error(t *testing.T) {
+
+	mockError := util.FAILED_SAVE_ERROR
+
+	mockData := model.Event{
+		ID:        "EVENT.01",
+		Name:      "Test 01",
+		Location:  "Location 01",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		DeletedAt: nil}
+
+	mockJSON, _ := json.Marshal(mockData)
+
+	mockResponse := util.Response{
+		Status:  http.StatusBadRequest,
+		Message: mockError.Error(),
+		Data:    nil,
+	}
+
+	mockResponseJSON, _ := json.Marshal(mockResponse)
+	mockResponseString := string(mockResponseJSON)
+
+	mockRepo := new(repository.EventRepo)
+	mockRepo.On("CreateEvent", mock.AnythingOfType("model.Event")).
+		Return(nil, mockError).Once()
+
+	e := echo.New()
+	req := httptest.NewRequest(echo.POST, "/", strings.NewReader(string(mockJSON)))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/events")
+
+	h := &eventService{repo: mockRepo}
+
+	// Assertions
+	if assert.Error(t, mockError, h.CreateData(c)) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+		assert.Equal(t, mockResponseString, rec.Body.String())
+	}
+
+	mockRepo.AssertExpectations(t)
+}
+
+func TestEventService_CreateData_Error_Bind(t *testing.T) {
+
+	mockError := errors.New("code=400, message=Unmarshal type error: expected=model.Event, got=array, offset=1")
+
+	mockJSON := `[{"error_1":"01","error_2":"02"}]`
+
+	mockResponse := util.Response{
+		Status:  http.StatusBadRequest,
+		Message: mockError.Error(),
+		Data:    nil,
+	}
+
+	mockResponseJSON, _ := json.Marshal(mockResponse)
+	mockResponseString := string(mockResponseJSON)
+
+	mockRepo := new(repository.EventRepo)
+
+	e := echo.New()
+	req := httptest.NewRequest(echo.POST, "/", strings.NewReader(string(mockJSON)))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/events")
+
+	h := &eventService{repo: mockRepo}
+
+	// Assertions
+	if assert.Error(t, mockError, h.CreateData(c)) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
 		assert.Equal(t, mockResponseString, rec.Body.String())
 	}
 
@@ -159,7 +313,8 @@ func TestEventService_UpdateData(t *testing.T) {
 	mockResponseString := string(mockResponseJSON)
 
 	mockRepo := new(repository.EventRepo)
-	mockRepo.On("UpdateEvent", mock.AnythingOfType("model.Event")).Return(mockData, nil).Once()
+	mockRepo.On("UpdateEvent", mock.AnythingOfType("model.Event")).
+		Return(mockData, nil).Once()
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.PUT, "/", strings.NewReader(string(mockJSON)))
@@ -181,6 +336,90 @@ func TestEventService_UpdateData(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
+func TestEventService_UpdateData_Error(t *testing.T) {
+
+	mockError := util.FAILED_UPDATE_ERROR
+
+	mockData := model.Event{
+		ID:        "EVENT.01",
+		Name:      "Test 01",
+		Location:  "Location 01",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		DeletedAt: nil}
+
+	mockJSON, _ := json.Marshal(mockData)
+
+	mockResponse := util.Response{
+		Status:  http.StatusBadRequest,
+		Message: mockError.Error(),
+		Data:    nil,
+	}
+
+	mockResponseJSON, _ := json.Marshal(mockResponse)
+	mockResponseString := string(mockResponseJSON)
+
+	mockRepo := new(repository.EventRepo)
+	mockRepo.On("UpdateEvent", mock.AnythingOfType("model.Event")).
+		Return(model.Event{}, mockError).Once()
+
+	e := echo.New()
+	req := httptest.NewRequest(echo.PUT, "/", strings.NewReader(string(mockJSON)))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/events/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("EVENT.01")
+
+	h := &eventService{repo: mockRepo}
+
+	// Assertions
+	if assert.Error(t, mockError, h.UpdateData(c)) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+		assert.Equal(t, mockResponseString, rec.Body.String())
+	}
+
+	mockRepo.AssertExpectations(t)
+}
+
+func TestEventService_UpdateData_Error_Bind(t *testing.T) {
+
+	mockError := errors.New("code=400, message=Unmarshal type error: expected=model.Event, got=array, offset=1")
+
+	mockJSON := `[{"error_1":"01","error_2":"02"}]`
+
+	mockResponse := util.Response{
+		Status:  http.StatusBadRequest,
+		Message: mockError.Error(),
+		Data:    nil,
+	}
+
+	mockResponseJSON, _ := json.Marshal(mockResponse)
+	mockResponseString := string(mockResponseJSON)
+
+	mockRepo := new(repository.EventRepo)
+
+	e := echo.New()
+	req := httptest.NewRequest(echo.PUT, "/", strings.NewReader(string(mockJSON)))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/events/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("EVENT.01")
+
+	h := &eventService{repo: mockRepo}
+
+	// Assertions
+	if assert.Error(t, mockError, h.UpdateData(c)) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+		assert.Equal(t, mockResponseString, rec.Body.String())
+	}
+
+	mockRepo.AssertExpectations(t)
+}
+
 func TestEventService_DeleteData(t *testing.T) {
 
 	mockResponse := util.Response{
@@ -193,7 +432,8 @@ func TestEventService_DeleteData(t *testing.T) {
 	mockResponseString := string(mockResponseJSON)
 
 	mockRepo := new(repository.EventRepo)
-	mockRepo.On("DeleteEvent", "EVENT.01").Return(nil).Once()
+	mockRepo.On("DeleteEvent", "EVENT.01").
+		Return(nil).Once()
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.DELETE, "/", nil)
@@ -208,6 +448,42 @@ func TestEventService_DeleteData(t *testing.T) {
 	// Assertions
 	if assert.NoError(t, h.DeleteData(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, mockResponseString, rec.Body.String())
+	}
+
+	mockRepo.AssertExpectations(t)
+}
+
+func TestEventService_DeleteData_Error(t *testing.T) {
+
+	mockError := util.NOT_FOUND_ERROR
+
+	mockResponse := util.Response{
+		Status:  http.StatusNotFound,
+		Message: mockError.Error(),
+		Data:    nil,
+	}
+
+	mockResponseJSON, _ := json.Marshal(mockResponse)
+	mockResponseString := string(mockResponseJSON)
+
+	mockRepo := new(repository.EventRepo)
+	mockRepo.On("DeleteEvent", "EVENT.01").
+		Return(mockError).Once()
+
+	e := echo.New()
+	req := httptest.NewRequest(echo.DELETE, "/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/events/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("EVENT.01")
+
+	h := &eventService{repo: mockRepo}
+
+	// Assertions
+	if assert.Error(t, mockError, h.DeleteData(c)) {
+		assert.Equal(t, http.StatusNotFound, rec.Code)
 		assert.Equal(t, mockResponseString, rec.Body.String())
 	}
 

@@ -34,8 +34,8 @@ func (s *eventService) GetDataAll(c echo.Context) error {
 	dataResults, err := s.repo.FetchEventAll()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &util.Response{
-			Status:  http.StatusBadRequest,
+		return c.JSON(http.StatusNotFound, &util.Response{
+			Status:  http.StatusNotFound,
 			Message: err.Error(),
 			Data:    nil,
 		})
@@ -55,8 +55,8 @@ func (s *eventService) GetDataByID(c echo.Context) error {
 	dataResult, err := s.repo.FetchEventByID(id)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &util.Response{
-			Status:  http.StatusBadRequest,
+		return c.JSON(http.StatusNotFound, &util.Response{
+			Status:  http.StatusNotFound,
 			Message: err.Error(),
 			Data:    nil,
 		})
@@ -138,8 +138,8 @@ func (s *eventService) DeleteData(c echo.Context) error {
 	err := s.repo.DeleteEvent(id)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, &util.Response{
-			Status:  http.StatusBadRequest,
+		return c.JSON(http.StatusNotFound, &util.Response{
+			Status:  http.StatusNotFound,
 			Message: err.Error(),
 			Data:    nil,
 		})
