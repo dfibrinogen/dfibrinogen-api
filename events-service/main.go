@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/dfibrinogen/dfibrinogen-api/events-service/db"
+	"github.com/dfibrinogen/dfibrinogen-api/events-service/handler"
 	"github.com/dfibrinogen/dfibrinogen-api/events-service/repository"
-	"github.com/dfibrinogen/dfibrinogen-api/events-service/service"
 	"github.com/labstack/echo"
 	"log"
 	"runtime"
@@ -28,7 +28,7 @@ func main() {
 
 	v1 := e.Group("/api/v1")
 
-	service.NewEventService(v1, repository.InitEventRepo(database))
+	handler.NewEventHandler(v1, repository.InitEventRepo(database))
 
 	e.Logger.Fatal(e.Start(":5000"))
 }

@@ -1,4 +1,4 @@
-package service
+package handler
 
 import (
 	"encoding/json"
@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-func TestEventService_GetDataAll(t *testing.T) {
+func TestEventHandler_GetDataAll(t *testing.T) {
 
 	mockData := []model.Event{{
 		ID:        "EVENT.01",
@@ -45,7 +45,10 @@ func TestEventService_GetDataAll(t *testing.T) {
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.NoError(t, h.GetDataAll(c)) {
@@ -56,7 +59,7 @@ func TestEventService_GetDataAll(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_GetDataAll_Error(t *testing.T) {
+func TestEventHandler_GetDataAll_Error(t *testing.T) {
 
 	mockError := util.EMPTY_ERROR
 
@@ -79,7 +82,10 @@ func TestEventService_GetDataAll_Error(t *testing.T) {
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.Error(t, mockError, h.GetDataAll(c)) {
@@ -90,7 +96,7 @@ func TestEventService_GetDataAll_Error(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_GetDataByID(t *testing.T) {
+func TestEventHandler_GetDataByID(t *testing.T) {
 
 	mockData := model.Event{
 		ID:        "EVENT.01",
@@ -121,7 +127,10 @@ func TestEventService_GetDataByID(t *testing.T) {
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.NoError(t, h.GetDataByID(c)) {
@@ -132,7 +141,7 @@ func TestEventService_GetDataByID(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_GetDataByID_Error(t *testing.T) {
+func TestEventHandler_GetDataByID_Error(t *testing.T) {
 
 	mockError := util.NOT_FOUND_ERROR
 
@@ -157,7 +166,10 @@ func TestEventService_GetDataByID_Error(t *testing.T) {
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.Error(t, mockError, h.GetDataByID(c)) {
@@ -168,7 +180,7 @@ func TestEventService_GetDataByID_Error(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_CreateData(t *testing.T) {
+func TestEventHandler_CreateData(t *testing.T) {
 
 	mockData := model.Event{
 		ID:        "EVENT.01",
@@ -200,7 +212,10 @@ func TestEventService_CreateData(t *testing.T) {
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.NoError(t, h.CreateData(c)) {
@@ -211,7 +226,7 @@ func TestEventService_CreateData(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_CreateData_Error(t *testing.T) {
+func TestEventHandler_CreateData_Error(t *testing.T) {
 
 	mockError := util.FAILED_SAVE_ERROR
 
@@ -245,7 +260,10 @@ func TestEventService_CreateData_Error(t *testing.T) {
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.Error(t, mockError, h.CreateData(c)) {
@@ -256,7 +274,7 @@ func TestEventService_CreateData_Error(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_CreateData_Error_Bind(t *testing.T) {
+func TestEventHandler_CreateData_Bind_Error(t *testing.T) {
 
 	mockError := errors.New("code=400, message=Unmarshal type error: expected=model.Event, got=array, offset=1")
 
@@ -280,7 +298,10 @@ func TestEventService_CreateData_Error_Bind(t *testing.T) {
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.Error(t, mockError, h.CreateData(c)) {
@@ -291,7 +312,7 @@ func TestEventService_CreateData_Error_Bind(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_UpdateData(t *testing.T) {
+func TestEventHandler_UpdateData(t *testing.T) {
 
 	mockData := model.Event{
 		ID:        "EVENT.01",
@@ -325,7 +346,10 @@ func TestEventService_UpdateData(t *testing.T) {
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.NoError(t, h.UpdateData(c)) {
@@ -336,7 +360,7 @@ func TestEventService_UpdateData(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_UpdateData_Error(t *testing.T) {
+func TestEventHandler_UpdateData_Error(t *testing.T) {
 
 	mockError := util.FAILED_UPDATE_ERROR
 
@@ -372,7 +396,10 @@ func TestEventService_UpdateData_Error(t *testing.T) {
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.Error(t, mockError, h.UpdateData(c)) {
@@ -383,7 +410,7 @@ func TestEventService_UpdateData_Error(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_UpdateData_Error_Bind(t *testing.T) {
+func TestEventHandler_UpdateData_Bind_Error(t *testing.T) {
 
 	mockError := errors.New("code=400, message=Unmarshal type error: expected=model.Event, got=array, offset=1")
 
@@ -409,7 +436,10 @@ func TestEventService_UpdateData_Error_Bind(t *testing.T) {
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.Error(t, mockError, h.UpdateData(c)) {
@@ -420,7 +450,7 @@ func TestEventService_UpdateData_Error_Bind(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_DeleteData(t *testing.T) {
+func TestEventHandler_DeleteData(t *testing.T) {
 
 	mockResponse := util.Response{
 		Status:  http.StatusOK,
@@ -443,7 +473,10 @@ func TestEventService_DeleteData(t *testing.T) {
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.NoError(t, h.DeleteData(c)) {
@@ -454,7 +487,7 @@ func TestEventService_DeleteData(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestEventService_DeleteData_Error(t *testing.T) {
+func TestEventHandler_DeleteData_Error(t *testing.T) {
 
 	mockError := util.NOT_FOUND_ERROR
 
@@ -479,7 +512,10 @@ func TestEventService_DeleteData_Error(t *testing.T) {
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
 
-	h := &eventService{repo: mockRepo}
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+
+	h := &eventHandler{repo: mockRepo}
 
 	// Assertions
 	if assert.Error(t, mockError, h.DeleteData(c)) {

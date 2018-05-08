@@ -1,4 +1,4 @@
-package service
+package handler
 
 import (
 	"github.com/dfibrinogen/dfibrinogen-api/events-service/model"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-type IEventService interface {
+type IEventHandler interface {
 	GetDataAll(c echo.Context) error
 	GetDataByID(c echo.Context) error
 	CreateData(c echo.Context) error
@@ -16,20 +16,22 @@ type IEventService interface {
 	DeleteData(c echo.Context) error
 }
 
-type eventService struct {
+type eventHandler struct {
 	repo repository.IEventRepository
 }
 
-func NewEventService(e *echo.Group, repo repository.IEventRepository) {
+func NewEventHandler(e *echo.Group, repo repository.IEventRepository) {
 
-	handler := &eventService{repo: repo}
+	handler := &eventHandler{repo: repo}
 
 	e.GET("/events", handler.GetDataAll)
 	e.GET("/events/:id", handler.GetDataByID)
 	e.POST("/events", handler.CreateData)
+	e.PUT("/events/:id", handler.UpdateData)
+	e.DELETE("/events/:id", handler.DeleteData)
 }
 
-func (s *eventService) GetDataAll(c echo.Context) error {
+func (s *eventHandler) GetDataAll(c echo.Context) error {
 
 	dataResults, err := s.repo.FetchEventAll()
 
@@ -48,7 +50,7 @@ func (s *eventService) GetDataAll(c echo.Context) error {
 	})
 }
 
-func (s *eventService) GetDataByID(c echo.Context) error {
+func (s *eventHandler) GetDataByID(c echo.Context) error {
 
 	id := c.Param("id")
 
@@ -69,7 +71,7 @@ func (s *eventService) GetDataByID(c echo.Context) error {
 	})
 }
 
-func (s *eventService) CreateData(c echo.Context) error {
+func (s *eventHandler) CreateData(c echo.Context) error {
 
 	var data model.Event
 
@@ -100,7 +102,7 @@ func (s *eventService) CreateData(c echo.Context) error {
 	})
 }
 
-func (s *eventService) UpdateData(c echo.Context) error {
+func (s *eventHandler) UpdateData(c echo.Context) error {
 
 	var data model.Event
 
@@ -131,7 +133,7 @@ func (s *eventService) UpdateData(c echo.Context) error {
 	})
 }
 
-func (s *eventService) DeleteData(c echo.Context) error {
+func (s *eventHandler) DeleteData(c echo.Context) error {
 
 	id := c.Param("id")
 
