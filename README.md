@@ -21,6 +21,20 @@ $ brew install postgresql
 $ brew install dep
 ```
 
+## Testing
+
+Just run this command
+
+```sh
+$ make test
+```
+
+Generate mock using Mockery
+
+```sh
+$ $GOPATH/bin/mockery -name=HelloInterface -inpkg
+```
+
 ## ToDo
 
 * DB Migration

@@ -1,4 +1,4 @@
-PROJECT_NAME := "srv-events"
+PROJECT_NAME := "srv-users"
 PKG := "github.com/dfibrinogen/dfibrinogen-api/$(PROJECT_NAME)"
 
 PKG_LIST := $(shell go list ${PKG}/... | grep -v /vendor/)

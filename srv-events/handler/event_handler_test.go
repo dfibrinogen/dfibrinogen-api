@@ -16,6 +16,15 @@ import (
 	"time"
 )
 
+func TestNewEventHandler(t *testing.T) {
+
+	mockRepo := new(repository.MockEventRepository)
+
+	e := echo.New()
+	g := e.Group("/api/v1")
+	NewEventHandler(g, mockRepo)
+}
+
 func TestEventHandler_GetDataAll(t *testing.T) {
 
 	mockData := []model.Event{{
@@ -35,7 +44,7 @@ func TestEventHandler_GetDataAll(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 	mockRepo.On("FetchEventAll").
 		Return(mockData, nil).Once()
 
@@ -44,9 +53,6 @@ func TestEventHandler_GetDataAll(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -72,7 +78,7 @@ func TestEventHandler_GetDataAll_Error(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 	mockRepo.On("FetchEventAll").
 		Return(nil, mockError).Once()
 
@@ -81,9 +87,6 @@ func TestEventHandler_GetDataAll_Error(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -115,8 +118,8 @@ func TestEventHandler_GetDataByID(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
-	mockRepo.On("FetchEventByID").
+	mockRepo := new(repository.MockEventRepository)
+	mockRepo.On("FetchEventByID", "EVENT.01").
 		Return(mockData, nil).Once()
 
 	e := echo.New()
@@ -126,9 +129,6 @@ func TestEventHandler_GetDataByID(t *testing.T) {
 	c.SetPath("/events/:id")
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -154,9 +154,9 @@ func TestEventHandler_GetDataByID_Error(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
-	mockRepo.On("FetchEventByID").
-		Return(nil, mockError).Once()
+	mockRepo := new(repository.MockEventRepository)
+	mockRepo.On("FetchEventByID", "EVENT.01").
+		Return(model.Event{}, mockError).Once()
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.GET, "/", nil)
@@ -165,9 +165,6 @@ func TestEventHandler_GetDataByID_Error(t *testing.T) {
 	c.SetPath("/events/:id")
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -201,7 +198,7 @@ func TestEventHandler_CreateData(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 	mockRepo.On("CreateEvent", mock.AnythingOfType("model.Event")).
 		Return(mockData, nil).Once()
 
@@ -211,9 +208,6 @@ func TestEventHandler_CreateData(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -249,9 +243,9 @@ func TestEventHandler_CreateData_Error(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 	mockRepo.On("CreateEvent", mock.AnythingOfType("model.Event")).
-		Return(nil, mockError).Once()
+		Return(model.Event{}, mockError).Once()
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.POST, "/", strings.NewReader(string(mockJSON)))
@@ -259,9 +253,6 @@ func TestEventHandler_CreateData_Error(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -289,7 +280,7 @@ func TestEventHandler_CreateData_Bind_Error(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.POST, "/", strings.NewReader(string(mockJSON)))
@@ -297,9 +288,6 @@ func TestEventHandler_CreateData_Bind_Error(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetPath("/events")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -333,7 +321,7 @@ func TestEventHandler_UpdateData(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 	mockRepo.On("UpdateEvent", mock.AnythingOfType("model.Event")).
 		Return(mockData, nil).Once()
 
@@ -345,9 +333,6 @@ func TestEventHandler_UpdateData(t *testing.T) {
 	c.SetPath("/events/:id")
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -383,7 +368,7 @@ func TestEventHandler_UpdateData_Error(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 	mockRepo.On("UpdateEvent", mock.AnythingOfType("model.Event")).
 		Return(model.Event{}, mockError).Once()
 
@@ -395,9 +380,6 @@ func TestEventHandler_UpdateData_Error(t *testing.T) {
 	c.SetPath("/events/:id")
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -425,7 +407,7 @@ func TestEventHandler_UpdateData_Bind_Error(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 
 	e := echo.New()
 	req := httptest.NewRequest(echo.PUT, "/", strings.NewReader(string(mockJSON)))
@@ -435,9 +417,6 @@ func TestEventHandler_UpdateData_Bind_Error(t *testing.T) {
 	c.SetPath("/events/:id")
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -461,7 +440,7 @@ func TestEventHandler_DeleteData(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 	mockRepo.On("DeleteEvent", "EVENT.01").
 		Return(nil).Once()
 
@@ -472,9 +451,6 @@ func TestEventHandler_DeleteData(t *testing.T) {
 	c.SetPath("/events/:id")
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
@@ -500,7 +476,7 @@ func TestEventHandler_DeleteData_Error(t *testing.T) {
 	mockResponseJSON, _ := json.Marshal(mockResponse)
 	mockResponseString := string(mockResponseJSON)
 
-	mockRepo := new(repository.EventRepo)
+	mockRepo := new(repository.MockEventRepository)
 	mockRepo.On("DeleteEvent", "EVENT.01").
 		Return(mockError).Once()
 
@@ -511,9 +487,6 @@ func TestEventHandler_DeleteData_Error(t *testing.T) {
 	c.SetPath("/events/:id")
 	c.SetParamNames("id")
 	c.SetParamValues("EVENT.01")
-
-	g := e.Group("/api/v1")
-	NewEventHandler(g, mockRepo)
 
 	h := &eventHandler{repo: mockRepo}
 
