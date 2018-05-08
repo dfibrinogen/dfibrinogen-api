@@ -21,6 +21,12 @@ $ brew install postgresql
 $ brew install dep
 ```
 
+## ToDo
+
+* DB Migration
+* Test Connection Database
+* Using Token
+
 ## Built With
 
 * [Echo](https://github.com/labstack/echo)
