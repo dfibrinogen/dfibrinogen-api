@@ -1,5 +1,5 @@
 PROJECT_NAME := "dfibrinogen-api"
-PKG := "gitlab.com/xeranta/ustadz-stream/$(PROJECT_NAME)"
+PKG := "github.com/dfibrinogen/$(PROJECT_NAME)"
 PKG_LIST := $(shell go list ${PKG}/... | grep -v /vendor/)
 GO_FILES := $(shell find . -name '*.go' | grep -v /vendor/ | grep -v _test.go)
 FORMAT := go fmt $$(go list ./... | grep -v /vendor/)
