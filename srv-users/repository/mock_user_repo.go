@@ -4,13 +4,13 @@ package repository
 import mock "github.com/stretchr/testify/mock"
 import model "github.com/dfibrinogen/dfibrinogen-api/srv-users/model"
 
-// MockIUserRepository is an auto generated mock type for the IUserRepository type
-type MockIUserRepository struct {
+// MockUserRepository is an auto generated mock type for the IUserRepository type
+type MockUserRepository struct {
 	mock.Mock
 }
 
 // CreateUser provides a mock function with given fields: data
-func (m *MockIUserRepository) CreateUser(data model.User) (model.User, error) {
+func (m *MockUserRepository) CreateUser(data model.User) (model.User, error) {
 	ret := m.Called(data)
 
 	var r0 model.User
@@ -31,7 +31,7 @@ func (m *MockIUserRepository) CreateUser(data model.User) (model.User, error) {
 }
 
 // DeleteUser provides a mock function with given fields: id
-func (m *MockIUserRepository) DeleteUser(id string) error {
+func (m *MockUserRepository) DeleteUser(id string) error {
 	ret := m.Called(id)
 
 	var r0 error
@@ -45,7 +45,7 @@ func (m *MockIUserRepository) DeleteUser(id string) error {
 }
 
 // FetchUserAll provides a mock function with given fields:
-func (m *MockIUserRepository) FetchUserAll() ([]model.User, error) {
+func (m *MockUserRepository) FetchUserAll() ([]model.User, error) {
 	ret := m.Called()
 
 	var r0 []model.User
@@ -68,7 +68,7 @@ func (m *MockIUserRepository) FetchUserAll() ([]model.User, error) {
 }
 
 // FetchUserByID provides a mock function with given fields: id
-func (m *MockIUserRepository) FetchUserByID(id string) (model.User, error) {
+func (m *MockUserRepository) FetchUserByID(id string) (model.User, error) {
 	ret := m.Called(id)
 
 	var r0 model.User
@@ -89,7 +89,7 @@ func (m *MockIUserRepository) FetchUserByID(id string) (model.User, error) {
 }
 
 // UpdateUser provides a mock function with given fields: data
-func (m *MockIUserRepository) UpdateUser(data model.User) (model.User, error) {
+func (m *MockUserRepository) UpdateUser(data model.User) (model.User, error) {
 	ret := m.Called(data)
 
 	var r0 model.User

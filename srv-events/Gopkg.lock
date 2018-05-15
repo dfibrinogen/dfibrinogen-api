@@ -8,6 +8,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/dfibrinogen/dfibrinogen-api"
+  packages = ["common"]
+  revision = "b739d2342863729987533b774f2ef4ea316c5c70"
+
+[[projects]]
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
@@ -97,7 +103,9 @@
   name = "golang.org/x/crypto"
   packages = [
     "acme",
-    "acme/autocert"
+    "acme/autocert",
+    "bcrypt",
+    "blowfish"
   ]
   revision = "b49d69b5da943f7ef3c9cf91c8777c1f78a0cc3c"
 
@@ -116,6 +124,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c3e640005b76baab3746cba44422de06f66904a314863c4369b97e25d15e9e44"
+  inputs-digest = "0f033a21ffce2954407eb68cc0316e4064c699d8f5ce1bbb8faf93ebb2f9cdfd"
   solver-name = "gps-cdcl"
   solver-version = 1
