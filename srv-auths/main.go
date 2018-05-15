@@ -1,12 +1,12 @@
 package main
 
 import (
-	"log"
-	"runtime"
-	"github.com/labstack/echo"
 	"github.com/dfibrinogen/dfibrinogen-api/srv-auths/db"
 	"github.com/dfibrinogen/dfibrinogen-api/srv-auths/handler"
 	"github.com/dfibrinogen/dfibrinogen-api/srv-auths/repository"
+	"github.com/labstack/echo"
+	"log"
+	"runtime"
 )
 
 func init() {
